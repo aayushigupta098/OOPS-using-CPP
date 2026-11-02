@@ -1,0 +1,71 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+class Student
+{
+    char name[100];
+    int age;
+    char sex;
+    float height;
+    float weight;
+public:
+    void readData()
+    {
+        cout << "Enter name: ";
+        cin >> ws;
+        cin.getline(name, 100);
+        cout << "Enter age: ";
+        cin >> age;
+        cout << "Enter sex (M/F): ";
+        cin >> sex;
+        cout << "Enter height (in cm): ";
+        cin >> height;
+        cout << "Enter weight (in kg): ";
+        cin >> weight;
+    }
+    void show() const
+    {
+        cout << "\nStudent Details: " << endl;
+        cout << "Name   : " << name << endl;
+        cout << "Age    : " << age << endl;
+        cout << "Sex    : " << sex << endl;
+        cout << "Height : " << height << " cm" << endl;
+        cout << "Weight : " << weight << " kg" << endl;
+    }
+};
+int main()
+{
+    Student s1, s2;
+    cout << "Enter student details:\n";
+    s1.readData();
+    ofstream outFile("student.dat", ios::binary);
+    if(!outFile)
+    {
+        cout << "Error opening file for writing!";
+        return 1;
+    }
+    outFile.write(reinterpret_cast<const char*>(&s1), sizeof(s1));
+    if(!outFile)
+    {
+        cout << "Error writing to file!";
+        return 1;
+    }
+    outFile.close();
+    cout << "\nStudent object stored successfully!\n";
+    ifstream inFile("student.dat", ios::binary);
+    if(!inFile)
+    {
+        cout << "Error opening file for reading!";
+        return 1;
+    }
+    inFile.read(reinterpret_cast<char*>(&s2), sizeof(s2));
+    if(!inFile)
+    {
+        cout << "Error reading from file!";
+        return 1;
+    }
+    inFile.close();
+    cout << "\nDisplaying object retrieved from binary file:";
+    s2.show();
+    return 0;
+}
